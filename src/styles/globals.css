@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  background-color: #000000;
+}
+.message-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+.message-list::-webkit-scrollbar-track {
+    background-color: #1a1a1a;
+    border-radius: 6px;
+}
+
+.message-list::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 6px;
+}
+
