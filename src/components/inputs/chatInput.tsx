@@ -3,9 +3,10 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
 interface ChatInputProps {
   onSubmit: (message: string) => void;
+  isLoading: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSubmit }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, isLoading }) => {
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e: FormEvent) => {
@@ -24,6 +25,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSubmit }) => {
         onChange={(e) => setMessage(e.target.value)}
       />
       <button
+        disabled={isLoading}
         type="submit"
         className="ml-3 border border-gray-200 bg-black px-6 py-3 font-semibold text-white hover:bg-white hover:text-black focus:outline-none"
       >
