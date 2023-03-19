@@ -1,3 +1,5 @@
+![Vercel](http://therealsujitk-vercel-badge.vercel.app/?app=therealsujitk-vercel-badge) ![License](https://img.shields.io/badge/license-MIT-blue)
+
 # Chat Website using ChatGPT API, Next.js, Tailwind CSS, and Prisma
 
 This is a chat website project that uses ChatGPT API for the chatbot functionality, Next.js for the frontend development, Tailwind CSS for styling and design, and Prisma as the ORM for database access.
