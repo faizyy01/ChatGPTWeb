@@ -70,6 +70,12 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  theme: {
+    colorScheme: "dark", // "auto" | "dark" | "light"
+    brandColor: "#22C55E", // Hex color code
+    logo: "", // Absolute URL to image
+    buttonText: "" // Hex color code
+  }
 };
 
 /**

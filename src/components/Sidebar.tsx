@@ -34,7 +34,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 className={`cursor-pointer py-3 px-6 text-gray-300 hover:border hover:border-gray-700 ${
                   chat.id === currentChat?.id ? "border border-green-500" : ""
                 }`}
-                onClick={() => void onChatChange(chat)}
+                onClick={
+                  chat.id !== currentChat?.id
+                    ? () => void onChatChange(chat)
+                    : undefined
+                }
               >
                 {chat.name}
               </li>

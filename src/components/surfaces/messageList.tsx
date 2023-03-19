@@ -1,5 +1,6 @@
 import React from "react";
 import { type messages, Role } from "@prisma/client";
+import ReactMarkdown from "react-markdown";
 // interface Message {
 //   isUser: boolean;
 //   text: string;
@@ -60,7 +61,7 @@ const MessageList: React.FC<MessageListProps> = ({
                     : "text-left text-green-500"
                 }`}
               >
-                {message.content}
+                {parseAndRenderCode(message.content)}
               </p>
             </div>
           </li>
@@ -76,6 +77,38 @@ const MessageList: React.FC<MessageListProps> = ({
         )}
       </ul>
     );
+};
+
+const parseAndRenderCode = (content: string) => {
+  const codeBlockRegex = /```([^`]+)```/g;
+  let lastIndex = 0;
+  const result = [];
+
+  let match;
+  while ((match = codeBlockRegex.exec(content)) !== null) {
+    const textBeforeCode = content.slice(lastIndex, match.index);
+    if (textBeforeCode) {
+      result.push(textBeforeCode);
+    }
+
+    const code = match[1];
+    if (code) {
+      result.push(
+        <ReactMarkdown
+          key={`code_${match.index}`}
+        >{`\`\`\`${code}\`\`\``}</ReactMarkdown>
+      );
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  const textAfterLastCode = content.slice(lastIndex);
+  if (textAfterLastCode) {
+    result.push(textAfterLastCode);
+  }
+
+  return result;
 };
 
 export default MessageList;

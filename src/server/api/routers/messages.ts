@@ -63,7 +63,12 @@ export const chatRouter = createTRPCRouter({
                     messages: messages as ChatCompletionRequestMessage[],
                 }
             );
+            //handle response error
+
             const gotResponse = chatCompletetion.data.choices[0]?.message as Messages;
+            if (chatCompletetion.status !== 200 || !gotResponse || !gotResponse.content) {
+                throw new Error("GPT-3 error");
+            }
             const newMessages = [
                 {
                     role: Role.user,
