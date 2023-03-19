@@ -6,9 +6,14 @@ export interface Messages {
     content: string;
 }
 
-export const messagesSchema = z.array(
-    z.object({
-        role: z.nativeEnum(Role),
-        content: z.string(),
-    })
-);
+export const messagesSchema = z.object(
+    {
+        messages: z.array(
+            z.object({
+                role: z.nativeEnum(Role),
+                content: z.string(),
+            })
+        ),
+        chatId: z.string().optional(),
+    }
+)
