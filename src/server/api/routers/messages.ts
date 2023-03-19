@@ -54,7 +54,8 @@ export const chatRouter = createTRPCRouter({
         .input(messagesSchema)
         .mutation(async ({ input, ctx }) => {
             const { messages, chatId } = input;
-            if (!messages || !messages[0] || !messages[0].content) {
+            const lastMessage = messages[messages.length - 1];
+            if (!messages || !lastMessage || !lastMessage.content) {
                 throw new Error("messages is not defined");
             }
             const chatCompletetion = await openai.createChatCompletion(
@@ -72,7 +73,7 @@ export const chatRouter = createTRPCRouter({
             const newMessages = [
                 {
                     role: Role.user,
-                    content: messages[0].content,
+                    content: lastMessage.content,
                     userId: ctx.session.user.id,
                 },
                 {
@@ -84,7 +85,7 @@ export const chatRouter = createTRPCRouter({
             if (!chatId) {
                 const newChat = await prisma.chat.create({
                     data: {
-                        name: messages[0].content.split(' ').slice(0, 3).join(' '),
+                        name: lastMessage.content.split(' ').slice(0, 3).join(' '),
                         messages: {
                             create: newMessages.map(message => ({
                                 role: message.role,
