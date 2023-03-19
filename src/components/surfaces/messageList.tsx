@@ -12,12 +12,30 @@ interface Messages {
 
 interface MessageListProps {
   messages: Messages[] | null;
+  isTyping: boolean;
   isLoading: boolean;
 }
 
-const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
-  if (!messages) {
-    return <></>;
+const MessageList: React.FC<MessageListProps> = ({
+  messages,
+  isLoading,
+  isTyping,
+}) => {
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border border-t-4 border-green-700"></div>
+      </div>
+    );
+  else if (!messages || messages.length === 0) {
+    return (
+      <>
+        <div className="flex h-full flex-col items-center justify-center">
+          <span className="mb-4 text-4xl">👋</span>
+          <p className="text-gray-500">Start a conversation!</p>
+        </div>
+      </>
+    );
   } else
     return (
       <ul className="space-y-4">
@@ -47,7 +65,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
             </div>
           </li>
         ))}
-        {isLoading && (
+        {isTyping && (
           <li className="flex items-start justify-end">
             <div className="w-full border border-green-700 px-6 py-3">
               <div className="justify-left flex animate-pulse items-center">

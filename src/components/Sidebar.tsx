@@ -6,9 +6,16 @@ import { type chat } from "@prisma/client";
 interface SidebarProps {
   chats: chat[];
   onChatChange: (chat: chat | null) => void;
+  currentChat: chat | null;
+  isloading: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ chats, onChatChange }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  chats,
+  onChatChange,
+  isloading,
+  currentChat,
+}) => {
   return (
     <div className="relative hidden h-full w-64 border-r border-gray-700 md:block">
       <div className="px-4">
@@ -24,12 +31,21 @@ const Sidebar: React.FC<SidebarProps> = ({ chats, onChatChange }) => {
             {chats.map((chat) => (
               <li
                 key={chat.id}
-                className="cursor-pointer py-3 px-6 text-gray-300 hover:border hover:border-gray-700"
+                className={`cursor-pointer py-3 px-6 text-gray-300 hover:border hover:border-gray-700 ${
+                  chat.id === currentChat?.id ? "border border-green-500" : ""
+                }`}
                 onClick={() => void onChatChange(chat)}
               >
                 {chat.name}
               </li>
             ))}
+            {isloading && (
+              <li className="py-3 px-6 text-gray-300">
+                <div className="flex items-center justify-center">
+                  <div className="h-6 w-6 animate-spin rounded-full border border-t-2 border-green-700"></div>
+                </div>
+              </li>
+            )}
           </ul>
         </div>
       </div>

@@ -7,10 +7,18 @@ import { type ReactNode } from "react";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import dynamic from "next/dynamic";
 
 interface MyAppProps extends AppProps {
   session: Session | null;
 }
+
+const AppRouteLoadingIndicator = dynamic(
+  () => import("~/components/loading/AppRouteLoadingIndicator"),
+  {
+    ssr: false,
+  }
+);
 
 const MyApp: AppType<MyAppProps> = ({
   Component,
@@ -18,6 +26,7 @@ const MyApp: AppType<MyAppProps> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <AppRouteLoadingIndicator />
       <Auth>
         <Component {...pageProps} />
       </Auth>

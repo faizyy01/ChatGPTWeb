@@ -98,35 +98,34 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black">
-      {/* while queries are loading display loading */}
-      {chats.isLoading && <div>Loading...</div>}
-      {/* if there is an error display error */}
-      {chats.isError && <div>{chats.error.message}</div>}
-      {/* if there is data display data */}
-      {chats.data && (
-        <div className="mx-auto h-screen py-10 px-4">
-          <div className="flex h-full">
-            <Sidebar chats={chats.data} onChatChange={handleChatChange} />
-            <div className="mx-auto flex w-full flex-col md:w-4/6">
-              <div
-                ref={messageListRef}
-                className="message-list mb-4 flex-grow overflow-y-auto"
-              >
-                <MessageList
-                  messages={messages}
-                  isLoading={getGptResponse.isLoading}
-                />
-              </div>
-              <div className="flex-shrink-0">
-                <ChatInput
-                  onSubmit={handleSendMessage}
-                  isLoading={getGptResponse.isLoading}
-                />
-              </div>
+      <div className="mx-auto h-screen py-10 px-4">
+        <div className="flex h-full">
+          <Sidebar
+            currentChat={currentChat}
+            chats={chats.data ? chats.data : []}
+            onChatChange={handleChatChange}
+            isloading={chats.isLoading}
+          />
+          <div className="mx-auto flex w-full flex-col md:w-4/6">
+            <div
+              ref={messageListRef}
+              className="message-list mb-4 flex-grow overflow-y-auto"
+            >
+              <MessageList
+                messages={messages}
+                isLoading={getMessages.isLoading}
+                isTyping={getGptResponse.isLoading}
+              />
+            </div>
+            <div className="flex-shrink-0">
+              <ChatInput
+                onSubmit={handleSendMessage}
+                isLoading={getGptResponse.isLoading}
+              />
             </div>
           </div>
         </div>
-      )}
+      </div>
     </main>
   );
 }
