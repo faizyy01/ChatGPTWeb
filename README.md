@@ -1,27 +1,23 @@
-# Create T3 App
+# Chat Website using ChatGPT API, Next.js, Tailwind CSS, and Prisma
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This is a chat website project that uses ChatGPT API for the chatbot functionality, Next.js for the frontend development, Tailwind CSS for styling and design, and Prisma as the ORM for database access.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+This chat website allows users to chat with a chatbot powered by the ChatGPT API. The website has a simple and user-friendly interface designed with Tailwind CSS. The chatbot uses natural language processing to understand and respond to user queries.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+The chatbot's functionality is built using Next.js, a popular React-based framework for building server-side rendered web applications. The project also uses Prisma, an ORM for database access, to store chat messages and other data.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## How to Use
 
-## Learn More
+```
+git clone https://github.com/Sleepingpirates/ChatGPTWeb
+yarn
+yarn dev
+```
+## Feedback and Contributions
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Feedback and contributions to this project are always welcome. Feel free to create issues or pull requests on this repository.
 
 ## How do I deploy this?
 
