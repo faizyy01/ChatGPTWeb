@@ -12,53 +12,50 @@ export default function Home() {
   const [messages, setMessages] = useState<Messages[]>([]);
   const chats = api.chatRouter.getChats.useQuery();
 
-  // const databaseMessages = api.chatRouter.getMessages.useQuery({
-  //   chatId: currentChat?.id,
-  // });
-
-  const getGptResponse = api.chatRouter.getGptResponse.useMutation({
+  const getMessages = api.chatRouter.getMessages.useMutation({
     onSuccess: (data) => {
-      console.log(data.content);
-      setMessages((messages) => {
-        if (messages) {
-          return [...messages, data];
-        } else {
-          return [data];
-        }
-      });
+      console.log(data);
+      if (data) {
+        const newMessages = data.map((message) => {
+          return {
+            role: message.role,
+            content: message.message,
+          };
+        });
+        setMessages(newMessages);
+      } else {
+        setMessages([]);
+      }
     },
     onError: (error) => {
       console.log(error);
     },
   });
 
-  // console.log(chats.data);
-  // console.log(databaseMessages.data);
-  const firstLoad = useRef(false);
+  const handleChatChange = (chat: chat | null) => {
+    setCurrentChat(chat);
+    if (chat)
+      getMessages.mutate({
+        chatId: chat.id,
+      });
+    else setMessages([]);
+  };
 
-  useEffect(() => {
-    if (
-      chats.data &&
-      chats.data.length > 0 &&
-      chats.data[0] &&
-      !firstLoad.current
-    ) {
-      firstLoad.current = true;
-      setCurrentChat(chats.data[0]);
-    }
-  }, [chats.data]);
-
-  // useEffect(() => {
-  //   if (databaseMessages.data && databaseMessages.data.length > 0) {
-  //     const newMessages = databaseMessages.data.map((message) => {
-  //       return {
-  //         role: message.role,
-  //         content: message.message,
-  //       };
-  //     });
-  //     setMessages(newMessages);
-  //   }
-  // }, [databaseMessages.data]);
+  const getGptResponse = api.chatRouter.getGptResponse.useMutation({
+    onSuccess: (data) => {
+      setMessages((messages) => {
+        if (messages) {
+          return [...messages, data.gpt];
+        } else {
+          return [data.gpt];
+        }
+      });
+      if (data.chat) setCurrentChat(data.chat);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const messageListRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +74,10 @@ export default function Home() {
         }
       });
 
-      getGptResponse.mutate([...messages, newMessage]);
+      getGptResponse.mutate({
+        messages: [...messages, newMessage],
+        chatId: currentChat?.id,
+      });
 
       // Scroll the message list to the bottom
       if (messageListRef.current) {
@@ -106,16 +106,22 @@ export default function Home() {
       {chats.data && (
         <div className="mx-auto h-screen py-10 px-4">
           <div className="flex h-full">
-            <Sidebar chats={chats.data} onChatChange={setCurrentChat} />
+            <Sidebar chats={chats.data} onChatChange={handleChatChange} />
             <div className="mx-auto flex w-full flex-col md:w-4/6">
               <div
                 ref={messageListRef}
                 className="message-list mb-4 flex-grow overflow-y-auto"
               >
-                <MessageList messages={messages} />
+                <MessageList
+                  messages={messages}
+                  isLoading={getGptResponse.isLoading}
+                />
               </div>
               <div className="flex-shrink-0">
-                <ChatInput onSubmit={handleSendMessage} />
+                <ChatInput
+                  onSubmit={handleSendMessage}
+                  isLoading={getGptResponse.isLoading}
+                />
               </div>
             </div>
           </div>
