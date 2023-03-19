@@ -12,9 +12,10 @@ interface Messages {
 
 interface MessageListProps {
   messages: Messages[] | null;
+  isLoading: boolean;
 }
 
-const MessageList: React.FC<MessageListProps> = ({ messages }) => {
+const MessageList: React.FC<MessageListProps> = ({ messages, isLoading }) => {
   if (!messages) {
     return <></>;
   } else
@@ -46,6 +47,15 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
             </div>
           </li>
         ))}
+        {isLoading && (
+          <li className="flex items-start justify-end">
+            <div className="w-full border border-green-700 px-6 py-3">
+              <div className="justify-left flex animate-pulse items-center">
+                <span className="text-green-500">...</span>
+              </div>
+            </div>
+          </li>
+        )}
       </ul>
     );
 };
