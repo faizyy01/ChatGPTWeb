@@ -1,6 +1,7 @@
 import React from "react";
 import { type messages, Role } from "@prisma/client";
 import ReactMarkdown from "react-markdown";
+import { useSession } from "next-auth/react";
 // interface Message {
 //   isUser: boolean;
 //   text: string;
@@ -22,6 +23,7 @@ const MessageList: React.FC<MessageListProps> = ({
   isLoading,
   isTyping,
 }) => {
+  const session = useSession();
   if (isLoading)
     return (
       <div className="flex items-center justify-center">
@@ -47,6 +49,23 @@ const MessageList: React.FC<MessageListProps> = ({
               message.role === Role.user ? "justify-end" : "justify-start"
             }`}
           >
+            {message.role === Role.user ? (
+              <img
+                src={
+                  session.data?.user.image
+                    ? session.data?.user.image
+                    : "https://png.pngtree.com/element_our/20190529/ourmid/pngtree-user-icon-image_1187018.jpg"
+                }
+                alt="Logo"
+                className="mr-4 h-6 w-6"
+              />
+            ) : (
+              <img
+                src="https://nileswestnews.org/wp-content/uploads/2023/01/chatgptlogo-900x900.png"
+                alt="Logo"
+                className="mr-4 h-6 w-6"
+              />
+            )}
             <div
               className={`w-full border px-6 py-3 ${
                 message.role === Role.user
@@ -57,7 +76,7 @@ const MessageList: React.FC<MessageListProps> = ({
               <p
                 className={`leading-relaxed ${
                   message.role === Role.user
-                    ? "text-right text-gray-300/90"
+                    ? "text-left text-gray-300/90"
                     : "text-left text-green-500"
                 }`}
               >
@@ -68,7 +87,12 @@ const MessageList: React.FC<MessageListProps> = ({
         ))}
         {isTyping && (
           <li className="flex items-start justify-end">
-            <div className="w-full border border-green-700 px-6 py-3">
+            <img
+              src="https://nileswestnews.org/wp-content/uploads/2023/01/chatgptlogo-900x900.png"
+              alt="Logo"
+              className="mr-4 h-6 w-6"
+            />
+            <div className=" w-full border border-green-700 px-6 py-3">
               <div className="justify-left flex animate-pulse items-center">
                 <span className="text-green-500">...</span>
               </div>

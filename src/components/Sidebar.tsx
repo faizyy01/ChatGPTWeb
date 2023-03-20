@@ -18,15 +18,15 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <div className="relative hidden h-full w-64 border-r border-gray-700 md:block">
-      <div className="px-4">
+      <div className="grid-template-rows-[auto,1fr,auto] grid h-full px-4">
         <button
-          className="w-full border border-gray-600 py-3 px-6 text-left font-semibold text-gray-300"
+          className="mb-4 w-full border border-gray-600 py-3 px-6 text-left font-semibold text-gray-300"
           onClick={() => void onChatChange(null)}
         >
           <PlusIcon className="mr-1 inline-block h-6 w-6 text-gray-300/90" />
           New Chat
         </button>
-        <div className="overflow-y-auto pt-4">
+        <div className="message-list overflow-y-auto">
           <ul className="space-y-2">
             {chats.map((chat) => (
               <li
@@ -52,16 +52,16 @@ const Sidebar: React.FC<SidebarProps> = ({
             )}
           </ul>
         </div>
-      </div>
-      <div className="absolute bottom-0 w-full px-4">
-        <button
-          className="w-full border border-gray-600 py-3 px-6 text-left font-semibold text-gray-300"
-          onClick={() => {
-            void signOut();
-          }}
-        >
-          Sign Out
-        </button>
+        <div className="w-full px-4 py-4">
+          <button
+            className="w-full border border-gray-600 py-3 px-6 text-left font-semibold text-gray-300"
+            onClick={() => {
+              void signOut();
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
     </div>
   );
