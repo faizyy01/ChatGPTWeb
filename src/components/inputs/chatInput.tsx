@@ -11,17 +11,27 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, isLoading }) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    void onSubmit(message);
-    setMessage("");
+    if (message.trim() !== "") {
+      void onSubmit(message);
+      setMessage("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 flex py-2">
       <textarea
-        className="h-14 w-full border border-gray-200 bg-black px-6 py-3 text-gray-300 focus:border-green-500 focus:outline-none"
+        className="h-14 w-full whitespace-pre-wrap border border-gray-200 bg-black px-6 py-3 text-gray-300 focus:border-green-500 focus:outline-none"
         placeholder="Type your message"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <button
         disabled={isLoading}

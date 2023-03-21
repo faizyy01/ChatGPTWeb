@@ -41,70 +41,70 @@ const MessageList: React.FC<MessageListProps> = ({
     );
   } else
     return (
-      <ul className="space-y-4">
-        <li className="">
-          <div className="flex items-center justify-center">
-            <p>Model: Legacy (GPT-3.5)</p>
-          </div>
-        </li>
-        {messages.map((message, index) => (
-          <li
-            key={index}
-            className={`flex items-start ${
-              message.role === Role.user ? "justify-end" : "justify-start"
-            }`}
-          >
-            {message.role === Role.user ? (
-              <img
-                src={
-                  session.data?.user.image
-                    ? session.data?.user.image
-                    : "https://png.pngtree.com/element_our/20190529/ourmid/pngtree-user-icon-image_1187018.jpg"
-                }
-                alt="Logo"
-                className="mr-4 h-6 w-6"
-              />
-            ) : (
+      <div className="mx-auto w-full md:w-5/6">
+        <ul className="space-y-4">
+          <li className="">
+            <div className="items-left flex justify-center">
+              <p className="text-green-500">Model: Legacy (GPT-3.5)</p>
+            </div>
+          </li>
+          {messages.map((message, index) => (
+            <li
+              key={index}
+              className={`flex w-full list-none items-start justify-start`}
+            >
+              {message.role === Role.user ? (
+                <img
+                  src={
+                    session.data?.user.image
+                      ? session.data?.user.image
+                      : "https://png.pngtree.com/element_our/20190529/ourmid/pngtree-user-icon-image_1187018.jpg"
+                  }
+                  alt="Logo"
+                  className="mr-4 h-6 w-6"
+                />
+              ) : (
+                <img
+                  src="https://nileswestnews.org/wp-content/uploads/2023/01/chatgptlogo-900x900.png"
+                  alt="Logo"
+                  className="mr-4 h-6 w-6"
+                />
+              )}
+              <div
+                className={`w-full border px-6 py-3  ${
+                  message.role === Role.user
+                    ? "border-gray-700"
+                    : "border-green-700"
+                }`}
+              >
+                <p
+                  className={`whitespace-pre-wrap leading-relaxed  ${
+                    message.role === Role.user
+                      ? "text-left text-gray-300/90"
+                      : "text-left text-green-500"
+                  }`}
+                >
+                  {parseAndRenderCode(message.content)}
+                </p>
+              </div>
+            </li>
+          ))}
+          {isTyping && (
+            <li className="flex items-start justify-end">
               <img
                 src="https://nileswestnews.org/wp-content/uploads/2023/01/chatgptlogo-900x900.png"
                 alt="Logo"
                 className="mr-4 h-6 w-6"
               />
-            )}
-            <div
-              className={`w-full border px-6 py-3 ${
-                message.role === Role.user
-                  ? "border-gray-700"
-                  : "border-green-700"
-              }`}
-            >
-              <p
-                className={`leading-relaxed ${
-                  message.role === Role.user
-                    ? "text-left text-gray-300/90"
-                    : "text-left text-green-500"
-                }`}
-              >
-                {parseAndRenderCode(message.content)}
-              </p>
-            </div>
-          </li>
-        ))}
-        {isTyping && (
-          <li className="flex items-start justify-end">
-            <img
-              src="https://nileswestnews.org/wp-content/uploads/2023/01/chatgptlogo-900x900.png"
-              alt="Logo"
-              className="mr-4 h-6 w-6"
-            />
-            <div className=" w-full border border-green-700 px-6 py-3">
-              <div className="justify-left flex animate-pulse items-center">
-                <span className="text-green-500">...</span>
+              <div className=" w-full border border-green-700 px-6 py-3">
+                <div className="justify-left flex animate-pulse items-center">
+                  <span className="text-green-500">...</span>
+                </div>
               </div>
-            </div>
-          </li>
-        )}
-      </ul>
+            </li>
+          )}
+        </ul>
+      </div>
     );
 };
 
@@ -123,9 +123,11 @@ const parseAndRenderCode = (content: string) => {
     const code = match[1];
     if (code) {
       result.push(
-        <ReactMarkdown
-          key={`code_${match.index}`}
-        >{`\`\`\`${code}\`\`\``}</ReactMarkdown>
+        <React.Fragment key={`code_${match.index}`}>
+          <ReactMarkdown className="overflow-x-auto">
+            {`\`\`\`${code}\`\`\``}
+          </ReactMarkdown>
+        </React.Fragment>
       );
     }
 

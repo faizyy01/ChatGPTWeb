@@ -106,7 +106,7 @@ export default function Home() {
             onChatChange={handleChatChange}
             isLoading={chats.isLoading}
           />
-          <div className="mx-auto flex w-full flex-col md:w-4/6">
+          <div className="mx-auto flex w-full flex-col py-2 px-2 md:w-4/6">
             <div
               ref={messageListRef}
               className="message-list mb-4 flex-grow overflow-y-auto"
