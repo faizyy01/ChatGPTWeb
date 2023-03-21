@@ -26,7 +26,7 @@ const MessageList: React.FC<MessageListProps> = ({
   const session = useSession();
   if (isLoading)
     return (
-      <div className="flex items-center justify-center">
+      <div className="flex h-full flex-col items-center justify-center">
         <div className="h-12 w-12 animate-spin rounded-full border border-t-4 border-green-700"></div>
       </div>
     );
@@ -42,6 +42,11 @@ const MessageList: React.FC<MessageListProps> = ({
   } else
     return (
       <ul className="space-y-4">
+        <li className="">
+          <div className="flex items-center justify-center">
+            <p>Model: Legacy (GPT-3.5)</p>
+          </div>
+        </li>
         {messages.map((message, index) => (
           <li
             key={index}

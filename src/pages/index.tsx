@@ -98,13 +98,13 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black">
-      <div className="mx-auto h-screen py-10 px-4">
+      <div className="mx-auto h-screen">
         <div className="flex h-full">
           <Sidebar
             currentChat={currentChat}
             chats={chats.data ? chats.data : []}
             onChatChange={handleChatChange}
-            isloading={chats.isLoading}
+            isLoading={chats.isLoading}
           />
           <div className="mx-auto flex w-full flex-col md:w-4/6">
             <div
