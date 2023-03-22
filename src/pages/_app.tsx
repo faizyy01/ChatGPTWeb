@@ -3,6 +3,7 @@ import { type Session } from "next-auth";
 import { useSession, SessionProvider } from "next-auth/react";
 import { type AppProps } from "next/app";
 import { type ReactNode } from "react";
+import { Toaster } from "react-hot-toast";
 
 import { api } from "~/utils/api";
 
@@ -29,6 +30,23 @@ const MyApp: AppType<MyAppProps> = ({
       <AppRouteLoadingIndicator />
       <Auth>
         <Component {...pageProps} />
+        <Toaster
+          position={"top-center"}
+          containerClassName={"!bottom-16 !select-none !text-center"}
+          gutter={16}
+          toastOptions={{
+            duration: 5000,
+            className: "!backdrop-blur-md !bg-slate-100/90 !text-slate-900",
+            success: {
+              className:
+                "!backdrop-blur-md !bg-emerald-100/90 !text-emerald-900",
+            },
+            error: {
+              className: "!backdrop-blur-md !bg-red-100/90 !text-red-900",
+              icon: "🚨",
+            },
+          }}
+        />
       </Auth>
     </SessionProvider>
   );

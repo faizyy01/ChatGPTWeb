@@ -45,7 +45,7 @@ const MessageList: React.FC<MessageListProps> = ({
         <ul className="space-y-4">
           <li className="">
             <div className="items-left flex justify-center">
-              <p className="text-green-500">Model: Legacy (GPT-3.5)</p>
+              <p className="text-green-500">Model: GPT-3.5</p>
             </div>
           </li>
           {messages.map((message, index) => (
@@ -84,7 +84,7 @@ const MessageList: React.FC<MessageListProps> = ({
                       : "text-left text-green-500"
                   }`}
                 >
-                  {parseAndRenderCode(message.content)}
+                  {parseAndRenderCode(message.content.trimStart())}
                 </p>
               </div>
             </li>

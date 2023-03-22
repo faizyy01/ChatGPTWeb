@@ -2,12 +2,14 @@ import React from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { signOut } from "next-auth/react";
 import { type chat } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 interface SidebarProps {
   chats: chat[];
   onChatChange: (chat: chat | null) => void;
   currentChat: chat | null;
   isLoading: boolean;
+  isGptLoading: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -15,12 +17,17 @@ const Sidebar: React.FC<SidebarProps> = ({
   onChatChange,
   isLoading,
   currentChat,
+  isGptLoading,
 }) => {
+  const { data } = useSession();
+  const handleChatChange = (chat: chat | null) => {
+    if (!isGptLoading) onChatChange(chat);
+  };
   return (
-    <aside className=" hidden h-full w-64 items-start border-r border-gray-600 p-3 md:flex md:flex-col">
+    <aside className=" hidden h-full w-64 items-start border-r border-gray-900 p-3 md:flex md:flex-col">
       <button
-        className="w-full border  border-gray-600 py-3 px-6 text-left font-semibold text-gray-300"
-        onClick={() => void onChatChange(null)}
+        className="w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
+        onClick={() => void handleChatChange(null)}
       >
         <PlusIcon className="mr-1 inline-block h-6 w-6 text-gray-300/90" />
         New Chat
@@ -29,12 +36,12 @@ const Sidebar: React.FC<SidebarProps> = ({
         {chats.map((chat) => (
           <li
             key={chat.id}
-            className={`mt-2 cursor-pointer border border-gray-700 py-3 px-6 text-gray-300 hover:border hover:border-gray-500 ${
+            className={`mt-2 cursor-pointer border border-gray-900 py-3 px-6 text-gray-400 hover:border hover:border-gray-700 ${
               chat.id === currentChat?.id ? "border border-green-500" : ""
             }`}
             onClick={
               chat.id !== currentChat?.id
-                ? () => void onChatChange(chat)
+                ? () => void handleChatChange(chat)
                 : undefined
             }
           >
@@ -49,8 +56,23 @@ const Sidebar: React.FC<SidebarProps> = ({
           </li>
         )}
       </ul>
+      <div className="px-1">
+        <p className="text-left text-xs text-gray-300">
+          <span className="text-gray-300/90">
+            Welcome, {data?.user.name} 👋
+          </span>
+        </p>
+      </div>
       <button
-        className="mt-3 w-full border  border-gray-600 py-3 px-6 text-left font-semibold text-gray-300"
+        className="mt-3 w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
+        onClick={() => {
+          void console.log("Implement Settings pop up.");
+        }}
+      >
+        Settings
+      </button>
+      <button
+        className="mt-3 w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
         onClick={() => {
           void signOut();
         }}

@@ -54,6 +54,8 @@ model User {
     email         String?    @unique
     emailVerified DateTime?
     image         String?
+    isAdmin       Boolean    @default(false)
+    isWhitelisted Boolean    @default(false)
     chats         chat[]
     accounts      Account[]
     sessions      Session[]
@@ -84,6 +86,7 @@ model messages {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     message   String   @db.Text
+    tokens    Int      @default(0)
     userId    String?
     User      User?    @relation(fields: [userId], references: [id])
     chat      chat     @relation(fields: [chatId], references: [id])

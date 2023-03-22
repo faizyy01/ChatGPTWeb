@@ -53,6 +53,17 @@ export const chatRouter = createTRPCRouter({
     getGptResponse: protectedProcedure
         .input(messagesSchema)
         .mutation(async ({ input, ctx }) => {
+            // Check if the user is an admin or whitelisted
+            const user = await prisma.user.findUnique({
+                where: { id: ctx.session.user.id },
+                select: { isAdmin: true, isWhitelisted: true },
+            });
+            if (!user) {
+                throw new Error("User not found");
+            }
+            if (!user.isAdmin && !user.isWhitelisted) {
+                throw new Error("Unauthorized access. Message @faiztec on Twitter to get whitelisted.");
+            }
             const { messages, chatId } = input;
             const lastMessage = messages[messages.length - 1];
             if (!messages || !lastMessage || !lastMessage.content) {
@@ -67,6 +78,7 @@ export const chatRouter = createTRPCRouter({
             //handle response error
 
             const gotResponse = chatCompletetion.data.choices[0]?.message as Messages;
+            const totalTokens = chatCompletetion.data.usage?.total_tokens ? chatCompletetion.data.usage?.total_tokens : 0;
             if (chatCompletetion.status !== 200 || !gotResponse || !gotResponse.content) {
                 throw new Error("GPT-3 error");
             }
@@ -91,6 +103,8 @@ export const chatRouter = createTRPCRouter({
                                 role: message.role,
                                 message: message.content,
                                 userId: ctx.session.user.id,
+                                tokens: message.role === Role.system ? totalTokens : 0,
+
                             }))
                         },
                         userId: ctx.session.user.id,
@@ -108,6 +122,7 @@ export const chatRouter = createTRPCRouter({
                         message: message.content,
                         chatId: chatId,
                         userId: ctx.session.user.id,
+                        tokens: message.role === Role.system ? totalTokens : 0,
                     }))
                 });
                 return { gpt: gotResponse, chat: undefined };

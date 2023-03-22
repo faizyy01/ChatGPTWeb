@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import { type messages, type chat, Role } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { type Messages } from "~/types/message.types";
+import { toast } from "react-hot-toast";
 export default function Home() {
   const { data } = useSession();
   const [currentChat, setCurrentChat] = useState<chat | null>(null);
@@ -28,7 +29,7 @@ export default function Home() {
       }
     },
     onError: (error) => {
-      console.log(error);
+      toast.error("Something went wrong.");
     },
   });
 
@@ -53,7 +54,7 @@ export default function Home() {
       if (data.chat) setCurrentChat(data.chat);
     },
     onError: (error) => {
-      console.log(error);
+      toast.error(error.message);
     },
   });
 
@@ -104,6 +105,7 @@ export default function Home() {
             currentChat={currentChat}
             chats={chats.data ? chats.data : []}
             onChatChange={handleChatChange}
+            isGptLoading={getGptResponse.isLoading}
             isLoading={chats.isLoading}
           />
           <div className="mx-auto flex w-full flex-col py-2 px-2 md:w-4/6">
