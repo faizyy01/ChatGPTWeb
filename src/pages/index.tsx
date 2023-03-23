@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 export default function Home() {
   const { data } = useSession();
   const [currentChat, setCurrentChat] = useState<chat | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const [messages, setMessages] = useState<Messages[]>([]);
   const chats = api.chatRouter.getChats.useQuery();
 
@@ -55,6 +56,7 @@ export default function Home() {
     },
     onError: (error) => {
       toast.error(error.message);
+      setError(true);
     },
   });
 
@@ -123,6 +125,7 @@ export default function Home() {
               <ChatInput
                 onSubmit={handleSendMessage}
                 isLoading={getGptResponse.isLoading}
+                isError={error}
               />
             </div>
           </div>
