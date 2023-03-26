@@ -23,4 +23,6 @@ Feedback and contributions to this project are always welcome. Feel free to crea
 
 ## How do I deploy this?
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FSleepingpirates%2FChatGPTWeb&env=DATABASE_URL,OPENAI_API_KEY,TWITTER_CLIENT_ID,TWITTER_CLIENT_SECRET)
+
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
