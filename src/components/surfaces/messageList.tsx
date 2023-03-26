@@ -81,7 +81,7 @@ const MessageList: React.FC<MessageListProps> = ({
                   className={`whitespace-pre-wrap leading-relaxed  ${
                     message.role === Role.user
                       ? "text-left text-gray-300/90"
-                      : "text-left text-green-500"
+                      : "text-left text-green-600 selection:bg-green-200 selection:text-white"
                   }`}
                 >
                   {parseAndRenderCode(message.content.trimStart())}
