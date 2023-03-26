@@ -12,7 +12,15 @@ export default function Home() {
   const [currentChat, setCurrentChat] = useState<chat | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [messages, setMessages] = useState<Messages[]>([]);
-  const chats = api.chatRouter.getChats.useQuery();
+  const chats = api.chatRouter.getChats.useInfiniteQuery(
+    {
+      limit: 18,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      // initialCursor: 1, // <-- optional you can pass an initialCursor
+    }
+  );
 
   const getMessages = api.chatRouter.getMessages.useMutation({
     onSuccess: (data) => {
@@ -99,13 +107,19 @@ export default function Home() {
     }
   }, [messages]);
 
+  const loadMoreChats = async () => {
+    await chats.fetchNextPage();
+  };
+
   return (
     <main className="min-h-screen bg-black">
       <div className="mx-auto h-screen">
         <div className="flex h-full">
           <Sidebar
             currentChat={currentChat}
-            chats={chats.data ? chats.data : []}
+            loadMoreChats={loadMoreChats}
+            isFetchingNextPage={chats.isFetchingNextPage}
+            pages={chats.data && chats.data.pages ? chats.data.pages : []}
             onChatChange={handleChatChange}
             isGptLoading={getGptResponse.isLoading}
             isLoading={chats.isLoading}

@@ -3,26 +3,50 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { signOut } from "next-auth/react";
 import { type chat } from "@prisma/client";
 import { useSession } from "next-auth/react";
+interface Page {
+  chats: chat[];
+}
 
 interface SidebarProps {
-  chats: chat[];
+  pages: Page[];
   onChatChange: (chat: chat | null) => void;
   currentChat: chat | null;
   isLoading: boolean;
   isGptLoading: boolean;
+  loadMoreChats: () => Promise<void>;
+  isFetchingNextPage: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  chats,
+  pages,
   onChatChange,
   isLoading,
   currentChat,
   isGptLoading,
+  loadMoreChats,
+  isFetchingNextPage,
 }) => {
   const { data } = useSession();
   const handleChatChange = (chat: chat | null) => {
     if (!isGptLoading) onChatChange(chat);
   };
+
+  const renderChatItem = (chat: chat) => (
+    <li
+      key={chat.id}
+      className={`mt-2 cursor-pointer border border-gray-900 py-3 px-6 text-gray-400 hover:border hover:border-gray-700 ${
+        chat.id === currentChat?.id ? "border border-green-500" : ""
+      }`}
+      onClick={
+        chat.id !== currentChat?.id
+          ? () => void handleChatChange(chat)
+          : undefined
+      }
+    >
+      {chat.name}
+    </li>
+  );
+
   return (
     <aside className=" hidden h-full w-64 items-start border-r border-gray-900 p-3 md:flex md:flex-col">
       <button
@@ -32,22 +56,24 @@ const Sidebar: React.FC<SidebarProps> = ({
         <PlusIcon className="mr-1 inline-block h-6 w-6 text-gray-300/90" />
         New Chat
       </button>
-      <ul className="mt-3 w-full flex-1 overflow-y-auto">
-        {chats.map((chat) => (
-          <li
-            key={chat.id}
-            className={`mt-2 cursor-pointer border border-gray-900 py-3 px-6 text-gray-400 hover:border hover:border-gray-700 ${
-              chat.id === currentChat?.id ? "border border-green-500" : ""
-            }`}
-            onClick={
-              chat.id !== currentChat?.id
-                ? () => void handleChatChange(chat)
-                : undefined
+      <ul
+        className="mt-3 w-full flex-1 overflow-y-auto"
+        onScroll={(e: React.UIEvent<HTMLUListElement>) => {
+          if (!isFetchingNextPage) {
+            const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+            if (scrollTop + clientHeight === scrollHeight) {
+              void loadMoreChats();
             }
-          >
-            {chat.name}
-          </li>
-        ))}
+          }
+        }}
+      >
+        {pages.map((page) => page.chats.map((chat) => renderChatItem(chat)))}
+        {isFetchingNextPage && (
+          <div className="h-2 w-full bg-gray-900">
+            <div className="h-2 animate-pulse bg-green-500"></div>
+          </div>
+        )}
+
         {isLoading && (
           <li className="py-3 px-6 text-gray-300">
             <div className="flex items-center justify-center">

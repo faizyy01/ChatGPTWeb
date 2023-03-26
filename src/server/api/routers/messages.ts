@@ -10,11 +10,9 @@ import { Configuration, OpenAIApi, type ChatCompletionRequestMessage } from "ope
 import { type Messages } from "~/types/message.types";
 import { messagesSchema } from "~/types/message.types";
 import { Role } from "@prisma/client";
-if (!process.env.OPENAI_API_KEY)
-    throw new Error("OPENAI_API_KEY is not defined");
-
+import { env } from "~/env.mjs";
 const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
@@ -38,17 +36,35 @@ export const chatRouter = createTRPCRouter({
             );
         }),
     getChats: protectedProcedure
-        .query(async ({ ctx }) => {
-            return await prisma.chat.findMany(
+        .input(z.object({
+            limit: z.number().min(1).max(30).nullish(),
+            cursor: z.string().nullish(), // <-- "cursor" needs to exist, but can be any type
+        }))
+        .query(async ({ ctx, input }) => {
+            const limit = input.limit ?? 30;
+            const { cursor } = input;
+            const chats = await prisma.chat.findMany(
                 {
+                    take: limit + 1, // get an extra item at the end which we'll use as next cursor
+                    cursor: cursor ? { id: cursor } : undefined,
                     where: {
                         userId: ctx.session.user.id,
                     },
                     orderBy: {
                         updatedAt: "desc",
                     },
+
                 }
             );
+            let nextCursor: typeof cursor | undefined = undefined;
+            if (chats.length > limit) {
+                const nextItem = chats.pop()
+                nextCursor = nextItem?.id ? nextItem.id : undefined;
+            }
+            return {
+                chats: chats,
+                nextCursor: nextCursor,
+            };
         }),
     getGptResponse: protectedProcedure
         .input(messagesSchema)
