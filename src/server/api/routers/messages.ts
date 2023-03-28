@@ -95,6 +95,10 @@ export const chatRouter = createTRPCRouter({
 
             const gotResponse = chatCompletetion.data.choices[0]?.message as Messages;
             const totalTokens = chatCompletetion.data.usage?.total_tokens ? chatCompletetion.data.usage?.total_tokens : 0;
+            const completionTokens = chatCompletetion.data.usage?.completion_tokens ? chatCompletetion.data.usage?.completion_tokens : 0;
+            const promptTokens = chatCompletetion.data.usage?.prompt_tokens ? chatCompletetion.data.usage?.prompt_tokens : 0;
+
+
             if (chatCompletetion.status !== 200 || !gotResponse || !gotResponse.content) {
                 throw new Error("GPT-3 error");
             }
@@ -114,13 +118,13 @@ export const chatRouter = createTRPCRouter({
                 const newChat = await prisma.chat.create({
                     data: {
                         name: lastMessage.content.split(' ').slice(0, 3).join(' '),
+                        totalTokens: totalTokens,
                         messages: {
                             create: newMessages.map(message => ({
                                 role: message.role,
                                 message: message.content,
                                 userId: ctx.session.user.id,
-                                tokens: message.role === Role.system ? totalTokens : 0,
-
+                                tokens: message.role === Role.system ? completionTokens : promptTokens,
                             }))
                         },
                         userId: ctx.session.user.id,
@@ -138,8 +142,12 @@ export const chatRouter = createTRPCRouter({
                         message: message.content,
                         chatId: chatId,
                         userId: ctx.session.user.id,
-                        tokens: message.role === Role.system ? totalTokens : 0,
+                        tokens: message.role === Role.system ? completionTokens : promptTokens,
                     }))
+                });
+                await prisma.chat.update({
+                    where: { id: chatId },
+                    data: { totalTokens: { increment: totalTokens } },
                 });
                 return { gpt: gotResponse, chat: undefined };
             }
