@@ -11,6 +11,7 @@ import { type Messages } from "~/types/message.types";
 import { messagesSchema } from "~/types/message.types";
 import { Role } from "@prisma/client";
 import { env } from "~/env.mjs";
+import { getDefaultModel } from "~/lib/models/getModels";
 const configuration = new Configuration({
     apiKey: env.OPENAI_API_KEY,
 });
@@ -87,11 +88,11 @@ export const chatRouter = createTRPCRouter({
             }
             const chatCompletetion = await openai.createChatCompletion(
                 {
-                    model: "gpt-3.5-turbo",
+                    model: input.model,
                     messages: messages as ChatCompletionRequestMessage[],
                 }
             );
-            //handle response error
+            //handle response error.
 
             const gotResponse = chatCompletetion.data.choices[0]?.message as Messages;
             const totalTokens = chatCompletetion.data.usage?.total_tokens ? chatCompletetion.data.usage?.total_tokens : 0;

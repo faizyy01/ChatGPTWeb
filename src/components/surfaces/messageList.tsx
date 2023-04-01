@@ -2,6 +2,7 @@ import React from "react";
 import { type messages, Role } from "@prisma/client";
 import ReactMarkdown from "react-markdown";
 import { useSession } from "next-auth/react";
+import { getDefaultModel } from "~/lib/models/getModels";
 // interface Message {
 //   isUser: boolean;
 //   text: string;
@@ -24,6 +25,7 @@ const MessageList: React.FC<MessageListProps> = ({
   isTyping,
 }) => {
   const session = useSession();
+  const model = getDefaultModel();
   if (isLoading)
     return (
       <div className="flex h-full flex-col items-center justify-center">
@@ -45,7 +47,7 @@ const MessageList: React.FC<MessageListProps> = ({
         <ul className="space-y-4">
           <li className="">
             <div className="items-left flex justify-center">
-              <p className="text-green-500">Model: GPT-3.5</p>
+              <p className="text-green-500">Model: {model}</p>
             </div>
           </li>
           {messages.map((message, index) => (
@@ -80,8 +82,8 @@ const MessageList: React.FC<MessageListProps> = ({
                 <p
                   className={`whitespace-pre-wrap leading-relaxed  ${
                     message.role === Role.user
-                      ? "text-left text-gray-300/90"
-                      : "text-left text-green-600 selection:bg-green-200 selection:text-white"
+                      ? "text-left text-gray-400/90"
+                      : "text-left text-gray-300"
                   }`}
                 >
                   {parseAndRenderCode(message.content.trimStart())}

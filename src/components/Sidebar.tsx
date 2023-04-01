@@ -4,6 +4,7 @@ import { signOut } from "next-auth/react";
 import { type chat } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import SettingsModal from "./Settings";
+import { toast } from "react-hot-toast";
 interface Page {
   chats: chat[];
 }
@@ -30,6 +31,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { data } = useSession();
   const handleChatChange = (chat: chat | null) => {
     if (!isGptLoading) onChatChange(chat);
+    else
+      toast.error("Please wait for the model to finish generating a response.");
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);

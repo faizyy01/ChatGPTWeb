@@ -7,6 +7,7 @@ import { type messages, type chat, Role } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { type Messages } from "~/types/message.types";
 import { toast } from "react-hot-toast";
+import { getDefaultModel } from "~/lib/models/getModels";
 export default function Home() {
   const { data } = useSession();
   const [currentChat, setCurrentChat] = useState<chat | null>(null);
@@ -88,6 +89,7 @@ export default function Home() {
       getGptResponse.mutate({
         messages: [...messages, newMessage],
         chatId: currentChat?.id,
+        model: getDefaultModel(),
       });
 
       // Scroll the message list to the bottom

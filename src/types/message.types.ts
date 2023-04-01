@@ -15,5 +15,6 @@ export const messagesSchema = z.object(
             })
         ),
         chatId: z.string().optional(),
+        model: z.string(),
     }
 )
