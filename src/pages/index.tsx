@@ -62,6 +62,7 @@ export default function Home() {
         }
       });
       if (data.chat) setCurrentChat(data.chat);
+      void chats.refetch();
     },
     onError: (error) => {
       toast.error(error.message);

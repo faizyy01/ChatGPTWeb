@@ -3,6 +3,8 @@ import { type messages, Role } from "@prisma/client";
 import ReactMarkdown from "react-markdown";
 import { useSession } from "next-auth/react";
 import { getDefaultModel } from "~/lib/models/getModels";
+import { toast } from "react-hot-toast";
+import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 // interface Message {
 //   isUser: boolean;
 //   text: string;
@@ -26,6 +28,10 @@ const MessageList: React.FC<MessageListProps> = ({
 }) => {
   const session = useSession();
   const model = getDefaultModel();
+  const copyToClipboard = (text: string) => {
+    void navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard!");
+  };
   if (isLoading)
     return (
       <div className="flex h-full flex-col items-center justify-center">
@@ -86,7 +92,10 @@ const MessageList: React.FC<MessageListProps> = ({
                       : "text-left text-gray-300"
                   }`}
                 >
-                  {parseAndRenderCode(message.content.trimStart())}
+                  {parseAndRenderCode(
+                    message.content.trimStart(),
+                    copyToClipboard
+                  )}
                 </p>
               </div>
             </li>
@@ -110,7 +119,10 @@ const MessageList: React.FC<MessageListProps> = ({
     );
 };
 
-const parseAndRenderCode = (content: string) => {
+const parseAndRenderCode = (
+  content: string,
+  copyToClipboard: (text: string) => void
+) => {
   const codeBlockRegex = /```([^`]+)```/g;
   let lastIndex = 0;
   const result = [];
@@ -124,8 +136,22 @@ const parseAndRenderCode = (content: string) => {
 
     const code = match[1];
     if (code) {
+      const codeLines = code?.split("\n").slice(1).join("\n");
       result.push(
         <React.Fragment key={`code_${match.index}`}>
+          <div className="relative flex items-center justify-between rounded-t-md bg-gray-800 px-4 py-2 font-sans text-xs text-gray-200">
+            <span>{code?.split("\n")[0]}</span>
+            <button
+              className="ml-auto flex gap-2"
+              onClick={() => copyToClipboard(codeLines)}
+            >
+              <ClipboardDocumentCheckIcon className="h-6 w-6 text-gray-400 hover:text-gray-500" />
+              Copy code
+            </button>
+          </div>
+          {/* <button onClick={() => copyToClipboard(code)}>
+            <ClipboardDocumentCheckIcon className="h-6 w-6 text-gray-400 hover:text-gray-500" />
+          </button> */}
           <ReactMarkdown className="overflow-x-auto">
             {`\`\`\`${code}\`\`\``}
           </ReactMarkdown>
