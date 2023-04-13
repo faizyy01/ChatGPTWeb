@@ -145,14 +145,14 @@ const parseAndRenderCode = (
               className="ml-auto flex gap-2"
               onClick={() => copyToClipboard(codeLines)}
             >
-              <ClipboardDocumentCheckIcon className="h-6 w-6 text-gray-400 hover:text-gray-500" />
+              <ClipboardDocumentCheckIcon className="h-4 w-4 text-gray-400 hover:text-gray-500" />
               Copy code
             </button>
           </div>
           {/* <button onClick={() => copyToClipboard(code)}>
             <ClipboardDocumentCheckIcon className="h-6 w-6 text-gray-400 hover:text-gray-500" />
           </button> */}
-          <ReactMarkdown className="overflow-x-auto">
+          <ReactMarkdown className="overflow-x-auto p-4">
             {`\`\`\`${code}\`\`\``}
           </ReactMarkdown>
         </React.Fragment>
