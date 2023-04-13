@@ -79,7 +79,7 @@ export const chatRouter = createTRPCRouter({
                 throw new Error("User not found");
             }
             if (!user.isAdmin && !user.isWhitelisted) {
-                throw new Error("Unauthorized access. Message @faiztec on Twitter to get whitelisted.");
+                throw new Error("Unauthorized access. Message fez#8895 on Discord to get whitelisted.");
             }
             const { messages, chatId } = input;
             const lastMessage = messages[messages.length - 1];

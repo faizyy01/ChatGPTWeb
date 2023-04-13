@@ -7,8 +7,7 @@ import {
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
-import Twitter from "next-auth/providers/twitter";
-
+import DiscordProvider from "next-auth/providers/discord";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -51,10 +50,15 @@ export const authOptions: NextAuthOptions = {
   //   secret: process.env.SUPABASE_SERVICE_ROLE_KEY,
   // }),
   providers: [
-    Twitter({
-      clientId: env.TWITTER_CLIENT_ID,
-      clientSecret: env.TWITTER_CLIENT_SECRET,
-      version: "2.0",
+    // Twitter({
+    //   clientId: env.TWITTER_CLIENT_ID,
+    //   clientSecret: env.TWITTER_CLIENT_SECRET,
+    //   version: "2.0",
+    // }),
+
+    DiscordProvider({
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET
     })
 
     /**
