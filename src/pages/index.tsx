@@ -129,8 +129,8 @@ export default function Home() {
             onChatChange={handleChatChange}
             isGptLoading={getGptResponse.isLoading}
             isLoading={chats.isLoading}
-            totalGpt3tokens={tokens.data?._sum?.totalGpt3tokens}
-            totalGpt4tokens={tokens.data?._sum?.totalGpt4tokens}
+            totalGpt3tokens={tokens.data?._sum?.totalGpt3tokens || 0}
+            totalGpt4tokens={tokens.data?._sum?.totalGpt4tokens || 0}
             totalTokens={tokens.data?._sum?.totalTokens}
           />
           <div className="mx-auto flex w-full flex-col py-2 px-2 md:w-4/6">
