@@ -23,6 +23,8 @@ export default function Home() {
     }
   );
 
+  const tokens = api.settingsRouter.getTokens.useQuery();
+
   const getMessages = api.chatRouter.getMessages.useMutation({
     onSuccess: (data) => {
       console.log(data);
@@ -63,6 +65,7 @@ export default function Home() {
       });
       if (data.chat) setCurrentChat(data.chat);
       void chats.refetch();
+      void tokens.refetch();
     },
     onError: (error) => {
       toast.error(error.message);
@@ -126,6 +129,9 @@ export default function Home() {
             onChatChange={handleChatChange}
             isGptLoading={getGptResponse.isLoading}
             isLoading={chats.isLoading}
+            totalGpt3tokens={tokens.data?._sum?.totalGpt3tokens}
+            totalGpt4tokens={tokens.data?._sum?.totalGpt4tokens}
+            totalTokens={tokens.data?._sum?.totalTokens}
           />
           <div className="mx-auto flex w-full flex-col py-2 px-2 md:w-4/6">
             <div

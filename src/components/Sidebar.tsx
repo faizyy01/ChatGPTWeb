@@ -3,12 +3,12 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { signOut } from "next-auth/react";
 import { type chat } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import SettingsModal from "./Settings";
+// import SettingsModal from "./Settings";
 import { toast } from "react-hot-toast";
+import { ModelSelector } from "./ModelSelector";
 interface Page {
   chats: chat[];
 }
-
 interface SidebarProps {
   pages: Page[];
   onChatChange: (chat: chat | null) => void;
@@ -17,6 +17,9 @@ interface SidebarProps {
   isGptLoading: boolean;
   loadMoreChats: () => Promise<void>;
   isFetchingNextPage: boolean;
+  totalTokens: number | undefined | null;
+  totalGpt3tokens: number | undefined | null;
+  totalGpt4tokens: number | undefined | null;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -27,6 +30,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   isGptLoading,
   loadMoreChats,
   isFetchingNextPage,
+  totalTokens,
+  totalGpt3tokens,
+  totalGpt4tokens,
 }) => {
   const { data } = useSession();
   const handleChatChange = (chat: chat | null) => {
@@ -61,13 +67,16 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      <SettingsModal
+      {/* <SettingsModal
         isSettingsModalOpen={isSettingsModalOpen}
         closeSettingsModal={closeSettingsModal}
-      />
+      /> */}
       <aside className=" hidden h-full w-64 items-start border-r border-gray-900 p-3 md:flex md:flex-col">
+        <div className="w-full">
+          <ModelSelector />
+        </div>
         <button
-          className="w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
+          className="mt-4 w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
           onClick={() => void handleChatChange(null)}
         >
           <PlusIcon className="mr-1 inline-block h-6 w-6 text-gray-300/90" />
@@ -101,17 +110,28 @@ const Sidebar: React.FC<SidebarProps> = ({
         </ul>
         <div className="px-1">
           <p className="text-left text-xs text-gray-300">
-            <span className="text-gray-300/90">
-              Welcome, {data?.user.name} 👋
-            </span>
+            <ul className="list-none text-gray-300/90">
+              <li className="mt-1">Welcome, {data?.user.name} 👋</li>
+
+              <li className="mt-1">
+                You spent{" "}
+                {(
+                  ((totalGpt3tokens || 0) / 1000) * 0.002 +
+                  ((totalGpt4tokens || 0) / 1000) * 0.03
+                ).toFixed(2)}
+                $
+              </li>
+              <li className="mt-1">You used {totalTokens || 0} tokens</li>
+            </ul>
           </p>
         </div>
-        <button
+
+        {/* <button
           className="mt-3 w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
           onClick={handleSettingsButtonClick}
         >
           Settings
-        </button>
+        </button> */}
         <button
           className="mt-3 w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
           onClick={() => {

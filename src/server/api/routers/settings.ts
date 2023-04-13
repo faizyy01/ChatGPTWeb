@@ -12,6 +12,8 @@ export const settingsRouter = createTRPCRouter({
             return await prisma.chat.aggregate({
                 _sum: {
                     totalTokens: true,
+                    totalGpt3tokens: true,
+                    totalGpt4tokens: true,
                 },
                 where: {
                     userId: ctx.session.user.id,
@@ -23,7 +25,7 @@ export const settingsRouter = createTRPCRouter({
             //check if user is admin
             const user = await prisma.user.findUnique({
                 where: { id: ctx.session.user.id },
-                select: { isAdmin: true, isWhitelisted: true },
+                select: { isAdmin: true },
             });
             if (!user?.isAdmin) {
                 throw new Error("Not authorized");
@@ -31,6 +33,8 @@ export const settingsRouter = createTRPCRouter({
             return await prisma.chat.aggregate({
                 _sum: {
                     totalTokens: true,
+                    totalGpt3tokens: true,
+                    totalGpt4tokens: true,
                 },
             });
         }),

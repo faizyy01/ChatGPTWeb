@@ -98,7 +98,8 @@ export const chatRouter = createTRPCRouter({
             const totalTokens = chatCompletetion.data.usage?.total_tokens ? chatCompletetion.data.usage?.total_tokens : 0;
             const completionTokens = chatCompletetion.data.usage?.completion_tokens ? chatCompletetion.data.usage?.completion_tokens : 0;
             const promptTokens = chatCompletetion.data.usage?.prompt_tokens ? chatCompletetion.data.usage?.prompt_tokens : 0;
-
+            const totalGpt3tokens = input.model === "gpt-3.5-turbo" ? totalTokens : 0;
+            const totalGpt4tokens = input.model === "gpt-4" ? totalTokens : 0;
 
             if (chatCompletetion.status !== 200 || !gotResponse || !gotResponse.content) {
                 throw new Error("GPT-3 error");
@@ -120,6 +121,8 @@ export const chatRouter = createTRPCRouter({
                     data: {
                         name: lastMessage.content.split(' ').slice(0, 3).join(' '),
                         totalTokens: totalTokens,
+                        totalGpt3tokens,
+                        totalGpt4tokens,
                         messages: {
                             create: newMessages.map(message => ({
                                 role: message.role,
@@ -148,7 +151,11 @@ export const chatRouter = createTRPCRouter({
                 });
                 await prisma.chat.update({
                     where: { id: chatId },
-                    data: { totalTokens: { increment: totalTokens } },
+                    data: {
+                        totalTokens: { increment: totalTokens },
+                        totalGpt3tokens: { increment: totalGpt3tokens },
+                        totalGpt4tokens: { increment: totalGpt4tokens },
+                    },
                 });
                 return { gpt: gotResponse, chat: undefined };
             }
