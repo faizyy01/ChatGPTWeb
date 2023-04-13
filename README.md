@@ -4,6 +4,9 @@
 
 This is a chat website project that uses ChatGPT API for the chatbot functionality, Next.js for the frontend development, Tailwind CSS for styling and design, and Prisma as the ORM for database access.
 
+![home](https://github.com/Sleepingpirates/ChatGPTWeb/blob/main/screenshots/Home.png?raw=true)
+
+
 ## Features
 
 This chat website allows users to chat with a chatbot powered by the ChatGPT API. The website has a simple and user-friendly interface designed with Tailwind CSS. The chatbot uses natural language processing to understand and respond to user queries.
