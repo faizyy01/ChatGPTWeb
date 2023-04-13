@@ -8,6 +8,8 @@ import { useSession } from "next-auth/react";
 import { type Messages } from "~/types/message.types";
 import { toast } from "react-hot-toast";
 import { getDefaultModel } from "~/lib/models/getModels";
+import * as htmlToImage from "html-to-image";
+
 export default function Home() {
   const { data } = useSession();
   const [currentChat, setCurrentChat] = useState<chat | null>(null);
@@ -117,6 +119,32 @@ export default function Home() {
     await chats.fetchNextPage();
   };
 
+  const saveElementAsImage = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    if (!element) {
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    htmlToImage
+      .toJpeg(element, {
+        height: element.scrollHeight,
+        style: {
+          overflowY: "visible",
+          maxHeight: "none",
+          border: "none",
+        },
+      })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        link.href = dataUrl;
+        link.download = "element-image.png";
+        link.click();
+      })
+      .catch(console.error);
+  };
+
   return (
     <main className="min-h-screen bg-black">
       <div className="mx-auto h-screen">
@@ -132,10 +160,12 @@ export default function Home() {
             totalGpt3tokens={tokens.data?._sum?.totalGpt3tokens || 0}
             totalGpt4tokens={tokens.data?._sum?.totalGpt4tokens || 0}
             totalTokens={tokens.data?._sum?.totalTokens}
+            saveElementAsImage={saveElementAsImage}
           />
           <div className="mx-auto flex w-full flex-col py-2 px-2 md:w-4/6">
             <div
               ref={messageListRef}
+              id="chat-window-message-list"
               className="message-list mb-4 flex-grow overflow-y-auto"
             >
               <MessageList

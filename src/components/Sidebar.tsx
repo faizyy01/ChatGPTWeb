@@ -20,6 +20,7 @@ interface SidebarProps {
   totalTokens: number | undefined | null;
   totalGpt3tokens: number | undefined | null;
   totalGpt4tokens: number | undefined | null;
+  saveElementAsImage: (elementId: string) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -33,6 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   totalTokens,
   totalGpt3tokens,
   totalGpt4tokens,
+  saveElementAsImage,
 }) => {
   const { data } = useSession();
   const handleChatChange = (chat: chat | null) => {
@@ -132,6 +134,14 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
           Settings
         </button> */}
+        <button
+          className="mt-3 w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
+          onClick={() => {
+            void saveElementAsImage("chat-window-message-list");
+          }}
+        >
+          Save
+        </button>
         <button
           className="mt-3 w-full border  border-gray-900 py-3 px-6 text-left font-semibold text-gray-300"
           onClick={() => {

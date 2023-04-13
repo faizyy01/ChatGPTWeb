@@ -73,7 +73,7 @@ const MessageList: React.FC<MessageListProps> = ({
                 />
               ) : (
                 <img
-                  src="https://nileswestnews.org/wp-content/uploads/2023/01/chatgptlogo-900x900.png"
+                  src="/chatgptlogo.png"
                   alt="Logo"
                   className="mr-4 h-6 w-6"
                 />
@@ -102,11 +102,7 @@ const MessageList: React.FC<MessageListProps> = ({
           ))}
           {isTyping && (
             <li className="flex items-start justify-end">
-              <img
-                src="https://nileswestnews.org/wp-content/uploads/2023/01/chatgptlogo-900x900.png"
-                alt="Logo"
-                className="mr-4 h-6 w-6"
-              />
+              <img src="/chatgptlogo.png" alt="Logo" className="mr-4 h-6 w-6" />
               <div className=" w-full border border-green-700 px-6 py-3">
                 <div className="justify-left flex animate-pulse items-center">
                   <span className="text-green-500">...</span>
