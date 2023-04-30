@@ -69,13 +69,15 @@ const MessageList: React.FC<MessageListProps> = ({
                       : "https://png.pngtree.com/element_our/20190529/ourmid/pngtree-user-icon-image_1187018.jpg"
                   }
                   alt="Logo"
-                  className="mr-4 h-6 w-6"
+                  className="mr-4 h-6 w-6 cursor-pointer"
+                  onClick={() => copyToClipboard(message.content)}
                 />
               ) : (
                 <img
                   src="/chatgptlogo.png"
                   alt="Logo"
-                  className="mr-4 h-6 w-6"
+                  className="mr-4 h-6 w-6 cursor-pointer"
+                  onClick={() => copyToClipboard(message.content)}
                 />
               )}
               <div
