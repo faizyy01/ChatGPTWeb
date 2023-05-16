@@ -47,6 +47,20 @@ export default function Home() {
     },
   });
 
+  const deleteChat = api.chatRouter.deleteChat.useMutation({
+    onSuccess: () => {
+      void chats.refetch();
+      toast.success("Chat deleted!");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const handleDeleteChat = (chatId: string) => {
+    deleteChat.mutate({ chatId: chatId });
+  };
+
   const handleChatChange = (chat: chat | null) => {
     setCurrentChat(chat);
     if (chat)
@@ -152,6 +166,7 @@ export default function Home() {
           <Sidebar
             currentChat={currentChat}
             loadMoreChats={loadMoreChats}
+            deleteChat={handleDeleteChat}
             isFetchingNextPage={chats.isFetchingNextPage}
             pages={chats.data && chats.data.pages ? chats.data.pages : []}
             onChatChange={handleChatChange}

@@ -86,7 +86,7 @@ model messages {
     tokens    Int      @default(0)
     userId    String?
     User      User?    @relation(fields: [userId], references: [id])
-    chat      chat     @relation(fields: [chatId], references: [id])
+    chat      chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
     chatId    String
 }
 

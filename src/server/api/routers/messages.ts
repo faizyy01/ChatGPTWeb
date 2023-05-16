@@ -19,6 +19,29 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export const chatRouter = createTRPCRouter({
+    deleteChat: protectedProcedure
+        .input(z.object({
+            chatId: z.string(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            const chat = await prisma.chat.findUnique({
+                where: {
+                    id: input.chatId,
+                },
+            });
+            if (!chat) {
+                throw new Error("Chat not found");
+            }
+            if (chat.userId !== ctx.session.user.id) {
+                throw new Error("Unauthorized");
+            }
+            await prisma.chat.delete({
+                where: {
+                    id: input.chatId,
+                },
+            });
+            return true;
+        }),
     getMessages: protectedProcedure
         .input(z.object({
             chatId: z.string().optional(),

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { signOut } from "next-auth/react";
 import { type chat } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -16,6 +16,7 @@ interface SidebarProps {
   isLoading: boolean;
   isGptLoading: boolean;
   loadMoreChats: () => Promise<void>;
+  deleteChat: (chat: string) => void;
   isFetchingNextPage: boolean;
   totalTokens: number | undefined | null;
   totalGpt3tokens: number | undefined | null;
@@ -30,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   currentChat,
   isGptLoading,
   loadMoreChats,
+  deleteChat,
   isFetchingNextPage,
   totalTokens,
   totalGpt3tokens,
@@ -63,7 +65,27 @@ const Sidebar: React.FC<SidebarProps> = ({
           : undefined
       }
     >
-      {chat.name}
+      <div className="flex items-center justify-between">
+        <div
+          className="max-w-sm truncate"
+          style={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {chat.name.length > 10 ? `${chat.name.substring(0, 20)}` : chat.name}
+        </div>
+        <button
+          className="ml-2"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevents triggering the onclick event of the parent li
+            deleteChat(chat.id);
+          }}
+        >
+          <TrashIcon className="h-5 w-5 text-gray-400 hover:text-red-500" />
+        </button>
+      </div>
     </li>
   );
 
